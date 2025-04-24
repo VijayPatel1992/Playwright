@@ -1,0 +1,2 @@
+Base URL: https://rahulshettyacademy.com/client/
+Username: qaUser
