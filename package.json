@@ -2,12 +2,15 @@
   "name": "playwright-automation",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "mcp-server": "npx @modelcontextprotocol/server-filesystem \"d:/Project/Playwright Automation\""
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@modelcontextprotocol/server-filesystem": "^2025.3.28",
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.14.0",
     "allure-playwright": "^3.2.1"

@@ -1,0 +1,15 @@
+{
+  "chat.mcp.discovery.enabled": true,
+  "mcp": {
+    "servers": {
+      "mcp-server-filesystem": {
+        "command": "npx",
+        "args": [
+          "@modelcontextprotocol/server-filesystem",
+          "d:/Project/Playwright Automation"
+        ],
+        "env": {}
+      }
+    }
+  }
+}
