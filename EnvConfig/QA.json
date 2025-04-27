@@ -1,5 +1,4 @@
 {
-    "baseUrl": "https://rahulshettyacademy.com/client/",
-    "username": "qaUser",
-    "password": "qaPassword"
-  }
+  "baseUrl": "https://rahulshettyacademy.com/client/"
+  
+}

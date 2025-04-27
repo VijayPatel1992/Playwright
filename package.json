@@ -16,6 +16,9 @@
     "allure-playwright": "^3.2.1"
   },
   "dependencies": {
-    "exceljs": "^4.4.0"
+    "ajv": "^8.17.1",
+    "csv-parser": "^3.2.0",
+    "exceljs": "^4.4.0",
+    "xlsx": "^0.18.5"
   }
 }

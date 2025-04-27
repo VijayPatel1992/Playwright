@@ -12,21 +12,25 @@ class HotelSearchPage {
         this.searchButton = page.getByRole('button', { name: 'Search' });
     }
 
+    // Navigates to the Hotels section
     async navigateToHotels() {
         await this.hotelsLink.click();
     }
 
+    // Enters the location and selects a suggestion
     async enterLocation(location, suggestionText) {
         await this.cityTextboxElement.click();
         await this.cityTextbox.fill(location);
         await this.page.getByText(suggestionText).click();
     }
 
+    // Selects check-in and check-out dates
     async selectDates(checkInLabel, checkOutLabel) {
         await this.dateRowGroup.getByLabel(checkInLabel).click();
         await this.dateRowGroup.getByLabel(checkOutLabel).click();
     }
 
+    // Sets the number of rooms, adults, and children
     async setGuests(room, adults, children) {
 
         var Index;
@@ -48,6 +52,7 @@ class HotelSearchPage {
         await this.applyButton.click();
     }
 
+    // Initiates the search for hotels
     async search() {
         await this.searchButton.click();
     }

@@ -7,6 +7,7 @@ class CartPage {
         this.buttonPlaceOrder = page.locator('div.actions a', { hasText: "Place Order " });
     }
 
+    // Verifies if a specific item is present in the cart
     async verifyItemInCart(itemName) {
         try {
             const item = this.page.locator('div.cartSection h3', { hasText: itemName });
@@ -21,6 +22,7 @@ class CartPage {
         }
     }
 
+    // Clicks the checkout button and verifies the visibility of the Place Order button
     async clickCheckoutButton() {
         try {
             await this.checkoutButton.click();

@@ -7,10 +7,12 @@ class LoginPage {
         this.loginButton = page.getByRole('button', { name: 'Login' });
     }
 
+    // Navigates to the login page
     async goto() {
         await this.page.goto('https://rahulshettyacademy.com/client/');
     }
 
+    // Logs in using the provided email and password
     async login(email, password) {
         await this.emailInput.click();
         await this.emailInput.fill(email);

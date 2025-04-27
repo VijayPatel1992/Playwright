@@ -39,7 +39,7 @@ class ExcelReader {
         headerRow.eachCell((cell, colNumber) => {
             if (cell.value === columnName) {
                 columnIndex = colNumber;
-            }
+    }
         });
 
         if (columnIndex === -1) {
@@ -71,4 +71,4 @@ class ExcelReader {
     }
 }
 
-module.exports = ExcelReader; // Ensure it is properly exported
+module.exports = ExcelReader;

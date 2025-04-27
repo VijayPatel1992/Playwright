@@ -5,6 +5,7 @@ class Dashboard {
         this.viewButton = page.getByRole('button', { name: 'View' }).first(); // Ensure correct nth index
     }
 
+    // Adds a specific product to the cart by its name
     async AddProductToCart(productName) {
         await this.viewButton.waitFor({ state: 'visible' }); // Wait for the button to be visible   
         var NoOfProduct = await this.ProductBody.count(); // Use 'this.ProductBody' consistently

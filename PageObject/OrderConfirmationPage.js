@@ -4,6 +4,7 @@ class OrderConfirmationPage {
         this.titleLocator = page.locator('table#htmlData tr table.order-summary tr td div.title');
     }
 
+    // Retrieves all title texts from the order confirmation page
     async getAllTitleTexts() {
         try {
             // Wait for the page to be ready and get all titles

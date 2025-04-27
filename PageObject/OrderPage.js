@@ -16,6 +16,7 @@ class OrderPage {
         this.retryDelay = 1000; // 1 second
     }
 
+    // Retries an action multiple times in case of failure
     async retry(action, errorMessage) {
         let lastError;
         for (let attempt = 1; attempt <= this.retryCount; attempt++) {
@@ -32,6 +33,7 @@ class OrderPage {
         throw new Error(`${errorMessage}. Failed after ${this.retryCount} attempts. Last error: ${lastError.message}`);
     }
 
+    // Fills in payment details and places the order
     async FillPaymentDetails() {
         try {
             // Ensure credit card field is ready
