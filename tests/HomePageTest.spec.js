@@ -90,29 +90,22 @@ customTest('End to End Scenario', async ({ page, testData }) => {
     try {
         // Login
         await testContext.loginPage.login(testData.UserName, testData.Password);
-        console.log('Login successful');
 
         // Add product to cart
         await testContext.dashboard.AddProductToCart(testData.Product);
-        console.log('Product added to cart');
-
+        
         // Navigate to cart
         await testContext.homePage.ClickOnCartButton();
-        console.log('Navigated to cart');
 
         // Verify cart and checkout
         await testContext.cartPage.verifyItemInCart(testData.Product);
         await testContext.cartPage.clickCheckoutButton();
-        console.log('Cart verification and checkout completed');
 
         // Complete payment
         await testContext.orderPage.FillPaymentDetails();
-        console.log('Payment details filled');
-
-        // Verify order confirmation
         const OrderProduct = await testContext.orderConfirmationPage.getAllTitleTexts();
         await expect(OrderProduct, 'Order confirmation should contain the correct product').toContain(testData.Product);
-        console.log('Order confirmation verified');
+     
 
     } catch (error) {
         console.error('Test execution failed:', error);
