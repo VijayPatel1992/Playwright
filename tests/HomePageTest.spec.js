@@ -2,113 +2,106 @@ import { test, expect } from '@playwright/test';
 import { loadEnvironmentConfig } from '../Utils/EnvLoader';
 import { OrderPage } from '../PageObject/OrderPage';
 import { OrderConfirmationPage } from '../PageObject/OrderConfirmationPage';
-const { LoginPage } = require('../PageObject/LoginPage');
-const { Dashboard } = require('../PageObject/Dashboard');
-const { HomePage } = require('../PageObject/HomePage');
-const { CartPage } = require('../PageObject/CartPage');
-const ExcelReader = require('../Utils/ExcelReader');
+import { LoginPage } from '../PageObject/LoginPage';
+import { Dashboard } from '../PageObject/Dashboard';
+import { HomePage } from '../PageObject/HomePage';
+import { CartPage } from '../PageObject/CartPage';
+import ExcelReader from '../Utils/ExcelReader';
 
 // Load environment configuration
 const env = process.env.TEST_ENV || 'QA';
 const config = loadEnvironmentConfig(env);
 
-// Test fixtures
-let testContext = {};
+test.describe('E2E Tests', () => {
+    let startTime;
+    let pageObjects;
 
-// Custom test fixture with retries and timeouts
-const customTest = test.extend({
-    testData: async ({}, use) => {
-        // Load test data before tests
-        try {
-            const data = await ExcelReader.getRowDataAsJson('../TestData/TestData.xlsx', 'Sheet1', 'Index', 'Index-1');
-            await use(data);
-        } catch (error) {
-            console.error('Failed to load test data:', error);
-            throw new Error(`Test data loading failed: ${error.message}`);
-        }
-    }
-});
+    test.beforeAll(async () => {
+        console.log(`Starting test suite in ${env} environment`);
+        console.log('Base URL:', config.baseUrl);
+    });
 
-customTest.beforeAll(async () => {
-    console.log(`Starting test suite in ${env} environment`);
-    console.log('Base URL:', config.baseUrl);
-});
+    test.beforeEach(async ({ page }, testInfo) => {
+        console.log(`Starting test: ${testInfo.title}`);
+        startTime = Date.now();
 
-customTest.beforeEach(async ({ page }, testInfo) => {
-    console.log(`Starting test: ${testInfo.title}`);
-    testContext.startTime = Date.now();
-
-    try {
         // Initialize page objects
-        testContext.loginPage = new LoginPage(page);
-        testContext.dashboard = new Dashboard(page);
-        testContext.homePage = new HomePage(page);
-        testContext.cartPage = new CartPage(page);
-        testContext.orderPage = new OrderPage(page);
-        testContext.orderConfirmationPage = new OrderConfirmationPage(page);
+        pageObjects = {
+            loginPage: new LoginPage(page),
+            dashboard: new Dashboard(page),
+            homePage: new HomePage(page),
+            cartPage: new CartPage(page),
+            orderPage: new OrderPage(page),
+            orderConfirmationPage: new OrderConfirmationPage(page)
+        };
 
         // Navigate to base URL with retry logic
-        await page.goto(config.baseUrl).catch(async (error) => {
+        try {
+            await page.goto(config.baseUrl);
+            console.log('Page loaded successfully');
+        } catch (error) {
             console.error('Initial navigation failed, retrying...', error);
             await page.waitForTimeout(2000);
             await page.goto(config.baseUrl);
-        });
+        }
+    });
 
-        console.log('Page loaded successfully');
-    } catch (error) {
-        console.error('Test setup failed:', error);
-        // Capture setup failure screenshot
-        await page.screenshot({ 
-            path: `./test-results/setup-failure-${testInfo.title}-${Date.now()}.png`,
-            fullPage: true 
-        });
-        throw error;
-    }
-});
+    test.afterEach(async ({ page }, testInfo) => {
+        const duration = Date.now() - startTime;
+        console.log(`Test "${testInfo.title}" ${testInfo.status} in ${duration}ms`);
 
-customTest.afterEach(async ({ page }, testInfo) => {
-    const duration = Date.now() - testContext.startTime;
-    console.log(`Test "${testInfo.title}" ${testInfo.status} in ${duration}ms`);
+        if (testInfo.status !== 'passed') {
+            console.log('Taking failure screenshot...');
+            await page.screenshot({ 
+                path: `./test-results/${testInfo.title}-failure-${Date.now()}.png`,
+                fullPage: true 
+            });
+        }
+    });
 
-    if (testInfo.status !== 'passed') {
-        console.log('Taking failure screenshot...');
-        await page.screenshot({ 
-            path: `./test-results/${testInfo.title}-failure-${Date.now()}.png`,
-            fullPage: true 
-        });
-    }
+    test('Navigate to Application URL', async ({ page }) => {
+        try {
+            const expectedLoginUrl = `${config.baseUrl}auth/login`;
+            await expect(page).toHaveURL(expectedLoginUrl);
+            
+            // Verify login form elements are present
+            await expect(page.locator('input#userEmail')).toBeVisible();
+            await expect(page.locator('input#userPassword')).toBeVisible();
+            await expect(page.getByRole('button', { name: 'Login' })).toBeVisible();
+            
+            console.log('Successfully navigated to login page:', expectedLoginUrl);
+        } catch (error) {
+            console.error('Navigation test failed:', error);
+            throw error;
+        }
+    });
 
-    await page.close();
-});
+    test('End to End Scenario', async ({ page }) => {
+        try {
+            // Load test data
+            const testData = await ExcelReader.getRowDataAsJson('../TestData/TestData.xlsx', 'Sheet1', 'Index', 'Index-1');
+            
+            // Login
+            await pageObjects.loginPage.login(testData.UserName, testData.Password);
 
-customTest.afterAll(async () => {
-    console.log('Test suite completed');
-});
+            // Add product to cart
+            await pageObjects.dashboard.AddProductToCart(testData.Product);
+            
+            // Navigate to cart
+            await pageObjects.homePage.ClickOnCartButton();
 
-// Main test case with improved error handling
-customTest('End to End Scenario', async ({ page, testData }) => {
-    try {
-        // Login
-        await testContext.loginPage.login(testData.UserName, testData.Password);
+            // Verify cart and checkout
+            await pageObjects.cartPage.verifyItemInCart(testData.Product);
+            await pageObjects.cartPage.clickCheckoutButton();
 
-        // Add product to cart
-        await testContext.dashboard.AddProductToCart(testData.Product);
-        
-        // Navigate to cart
-        await testContext.homePage.ClickOnCartButton();
+            // Complete payment
+            await pageObjects.orderPage.FillPaymentDetails();
+            const OrderProduct = await pageObjects.orderConfirmationPage.getAllTitleTexts();
+            await expect(OrderProduct).toContain(testData.Product);
 
-        // Verify cart and checkout
-        await testContext.cartPage.verifyItemInCart(testData.Product);
-        await testContext.cartPage.clickCheckoutButton();
-
-        // Complete payment
-        await testContext.orderPage.FillPaymentDetails();
-        const OrderProduct = await testContext.orderConfirmationPage.getAllTitleTexts();
-        await expect(OrderProduct, 'Order confirmation should contain the correct product').toContain(testData.Product);
-     
-
-    } catch (error) {
-        console.error('Test execution failed:', error);
-        throw error; // Re-throw to mark the test as failed
-    }
+        } catch (error) {
+            console.error('Test execution failed:', error);
+            throw error;
+        }
+    });
 });
