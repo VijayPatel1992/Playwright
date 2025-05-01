@@ -1,0 +1,23 @@
+{
+  "server": {
+    "port": 3000,
+    "host": "localhost"
+  },
+  "github": {
+    "owner": "${GITHUB_OWNER}",
+    "repo": "${GITHUB_REPO}",
+    "branch": "main",
+    "token": "${GITHUB_TOKEN}"
+  },
+  "paths": {
+    "tests": "./tests",
+    "pageObjects": "./PageObject",
+    "utils": "./Utils",
+    "testData": "./TestData"
+  },
+  "modelContext": {
+    "defaultModel": "playwright",
+    "supportedLanguages": ["javascript"],
+    "ignorePatterns": ["node_modules/**", "test-results/**", "playwright-report/**"]
+  }
+}

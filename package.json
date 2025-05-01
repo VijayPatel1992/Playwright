@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "mcp-server": "npx @modelcontextprotocol/server-filesystem \"d:/Project/Playwright Automation\""
+    "mcp-server": "node Utils/setupMcpServer.js",
+    "mcp-server:debug": "node Utils/setupMcpServer.js --debug"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +16,11 @@
     "@types/node": "^22.14.0"
   },
   "dependencies": {
+    "@octokit/rest": "^21.1.1",
     "ajv": "^8.17.1",
     "csv-parser": "^3.2.0",
     "exceljs": "^4.4.0",
+    "node-fetch": "^3.3.2",
     "xlsx": "^0.18.5"
   }
 }
