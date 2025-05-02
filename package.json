@@ -1,6 +1,7 @@
 {
   "name": "playwright-automation",
-  "version": "1.0.0",  "main": "index.js",
+  "version": "1.0.0",
+  "main": "index.js",
   "scripts": {},
   "keywords": [],
   "author": "",
@@ -9,7 +10,8 @@
   "devDependencies": {
     "@modelcontextprotocol/server-filesystem": "^2025.3.28",
     "@playwright/test": "^1.52.0",
-    "@types/node": "^22.14.0"
+    "@types/node": "^22.14.0",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@octokit/rest": "^21.1.1",
