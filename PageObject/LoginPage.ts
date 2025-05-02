@@ -1,4 +1,5 @@
 import { Page, Locator } from '@playwright/test';
+import { Dashboard } from './Dashboard';
 
 export class LoginPage {
     private readonly page: Page;
@@ -27,7 +28,7 @@ export class LoginPage {
             throw error;
         }
     }// Logs in using the provided email and password
-    async login(email: string, password: string): Promise<void> {
+    async login(email: string, password: string): Promise<Dashboard> {
         try {
             await this.emailInput.click();
             await this.emailInput.fill(email);
@@ -45,5 +46,8 @@ export class LoginPage {
             }
             throw error;
         }
+
+        const dashboardPage  = new Dashboard(this.page);
+        return dashboardPage; // Return the Dashboard page object for further actions
     }
 }

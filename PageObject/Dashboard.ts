@@ -1,11 +1,11 @@
 import { Page, Locator } from '@playwright/test';
 
 export class Dashboard {
-    private readonly page: Page;
+    //private readonly page: Page;
     private readonly ProductBody: Locator;
     private readonly viewButton: Locator;
 
-    constructor(page: Page) {
+    constructor(private page: Page) {
         this.page = page;
         this.ProductBody = page.locator("div.card-body"); 
         this.viewButton = page.getByRole('button', { name: 'View' }).first();

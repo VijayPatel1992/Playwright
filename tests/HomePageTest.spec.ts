@@ -92,10 +92,12 @@ test('End to End Scenario', async ({ page }) => {
         const testData: TestData = await ExcelReader.getRowDataAsJson('../TestData/TestData.xlsx', 'Sheet1', 'Index', 'Index-1');
         
         // Login
+        //const dashboard = await pageObjects.loginPage.login(testData.UserName, testData.Password);
         await pageObjects.loginPage.login(testData.UserName, testData.Password);
         
         // Add product to cart
-        await pageObjects.dashboard.AddProductToCart(testData.Product);
+       await pageObjects.dashboard.AddProductToCart(testData.Product);
+        //await dashboard.AddProductToCart(testData.Product);
         
         // Navigate to cart
         await pageObjects.homePage.ClickOnCartButton();
