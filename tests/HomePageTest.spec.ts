@@ -7,6 +7,7 @@ import { Dashboard } from '../PageObject/Dashboard';
 import { HomePage } from '../PageObject/HomePage';
 import { CartPage } from '../PageObject/CartPage';
 import { ExcelReader } from '../Utils/ExcelReader';
+import logger, { getTestLogger } from '../Utils/Logger';
 import type { Config, PageObjects, TestData } from '../types';
 
 // Load environment configuration
@@ -16,16 +17,19 @@ const config: Config = loadEnvironmentConfig(env);
 let startTime: number;
 let suiteStartTime: number;
 let pageObjects: PageObjects;
+let testLogger = logger; // Default logger for suite-level logs
 
-
+// Initialize suite-level logger in beforeAll
 test.beforeAll(async () => {
-    console.log(`Starting test suite in ${env} environment`);
-    console.log('Base URL:', config.baseUrl);
+    testLogger.info(`Starting test suite in ${env} environment`);
+    testLogger.info('Base URL:', config.baseUrl);
     suiteStartTime = Date.now();
 });
 
 test.beforeEach(async ({ page }, testInfo) => {
-    console.log(`Starting test: ${testInfo.title}`);
+    // Initialize a logger for the current test case
+    testLogger = getTestLogger(testInfo.title.replace(/\s+/g, '_'));
+    testLogger.info(`Starting test: ${testInfo.title}`);
     startTime = Date.now();
 
     // Initialize page objects
@@ -41,20 +45,20 @@ test.beforeEach(async ({ page }, testInfo) => {
     // Navigate to base URL with retry logic
     try {
         await page.goto(config.baseUrl);
-        console.log('Page loaded successfully');
+        testLogger.info('Page loaded successfully');
     } catch (error) {
-        console.error('Initial navigation failed, retrying...', error);
+        testLogger.error('Initial navigation failed, retrying...', error);
         await page.waitForTimeout(2000);
         await page.goto(config.baseUrl);
     }
 });
 
 test.afterEach(async ({ page }, testInfo) => {
-    const duration = Date.now() - startTime;
-    console.log(`Test "${testInfo.title}" ${testInfo.status} in ${duration}ms`);
-
+    // Log the test result
+    testLogger.info(`Test "${testInfo.title}" ${testInfo.status} in ${testInfo.duration}ms`);
     if (testInfo.status !== 'passed') {
-        console.log('Taking failure screenshot...');
+        testLogger.error(`Test "${testInfo.title}" failed.`);
+        testLogger.info('Taking failure screenshot...');
         await page.screenshot({ 
             path: `./test-results/${testInfo.title}-failure-${Date.now()}.png`,
             fullPage: true 
@@ -65,8 +69,8 @@ test.afterEach(async ({ page }, testInfo) => {
 test.afterAll(async () => {
     const suiteEndTime = Date.now();
     const totalDuration = suiteEndTime - suiteStartTime;
-    console.log('All test cases executed successfully.');
-    console.log(`Total execution time: ${totalDuration}ms`);
+    testLogger.info('All test cases executed successfully.');
+    testLogger.info(`Total execution time: ${totalDuration}ms`);
 });
 
 test('Navigate to Application URL', async ({ page }) => {
@@ -79,9 +83,9 @@ test('Navigate to Application URL', async ({ page }) => {
         await expect(page.locator('input#userPassword')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Login' })).toBeVisible();
         
-        console.log('Successfully navigated to login page:', expectedLoginUrl);
+        testLogger.info('Successfully navigated to login page:', expectedLoginUrl);
     } catch (error) {
-        console.error('Navigation test failed:', error);
+        testLogger.error('Navigation test failed:', error);
         throw error;
     }
 });
@@ -115,7 +119,7 @@ test('End to End Scenario', async ({ page }) => {
         
     } catch (error) {
         if (error instanceof Error) {
-            console.error('Test execution failed:', error.message);
+            testLogger.error('Test execution failed:', error.message);
             // Take a screenshot of the failure state
             await page.screenshot({ 
                 path: `./test-results/e2e-test-failure-${Date.now()}.png`,
