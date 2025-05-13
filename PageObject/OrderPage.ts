@@ -1,7 +1,14 @@
-const { expect } = require('@playwright/test');
+import { Page, Locator, expect } from '@playwright/test';
 
-class OrderPage {
-    constructor(page) {
+export class OrderPage {
+    private readonly page: Page;
+    private readonly textBoxCreditCardNumber: Locator;
+    private readonly textBoxCVVCode: Locator;
+    private readonly textBoxCountry: Locator;
+    private readonly ButtonPlaceOrder: Locator;
+    private readonly OrderConfirmation: Locator;
+
+    constructor(page: Page) {
         this.page = page;
 
         // Selectors
@@ -50,16 +57,17 @@ class OrderPage {
                 state: 'visible',
                 timeout: 15000 
             });
-            await expect(this.OrderConfirmation).toBeVisible();
-
-        } catch (error) {
-            console.error('Payment process failed:', error.message);
-            // Capture screenshot on failure
-            await this.page.screenshot({ 
-                path: `./test-results/payment-failure-${Date.now()}.png`,
-                fullPage: true 
-            });
-            throw new Error(`Payment process failed: ${error.message}`);
+            await expect(this.OrderConfirmation).toBeVisible();        } catch (error) {
+            if (error instanceof Error) {
+                console.error('Payment process failed:', error.message);
+                // Capture screenshot on failure
+                await this.page.screenshot({ 
+                    path: `./test-results/payment-failure-${Date.now()}.png`,
+                    fullPage: true 
+                });
+                throw new Error(`Payment process failed: ${error.message}`);
+            }
+            throw error;
         }
     }
 }

@@ -2,9 +2,7 @@
   "name": "playwright-automation",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "mcp-server": "npx @modelcontextprotocol/server-filesystem \"d:/Project/Playwright Automation\""
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -12,12 +10,16 @@
   "devDependencies": {
     "@modelcontextprotocol/server-filesystem": "^2025.3.28",
     "@playwright/test": "^1.52.0",
-    "@types/node": "^22.14.0"
+    "@types/node": "^22.14.0",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@octokit/rest": "^21.1.1",
     "ajv": "^8.17.1",
     "csv-parser": "^3.2.0",
     "exceljs": "^4.4.0",
+    "node-fetch": "^3.3.2",
+    "winston": "^3.17.0",
     "xlsx": "^0.18.5"
   }
 }
