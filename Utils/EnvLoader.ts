@@ -8,6 +8,7 @@ import { Config } from '../types';
  * @param filePath - The path to the JSON file.
  * @param schema - The JSON schema to validate against.
  * @returns Returns true if the JSON is valid, otherwise false.
+ * $env:TEST_ENV="UAT"; npx playwright test HomePageTest.spec --headed
  */
 function validateJsonFile(filePath: string, schema: JSONSchemaType<Config>): boolean {
     const ajv = new Ajv();
