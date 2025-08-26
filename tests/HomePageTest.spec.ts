@@ -95,7 +95,7 @@ test.afterAll(async () => {
 
 test('Navigate to Application URL', async ({ page }) => {
   try {
-    const expectedLoginUrl = `${config.baseUrl}auth/login`;
+    const expectedLoginUrl = `${config.baseUrl}#/auth/login`;
     await expect(page).toHaveURL(expectedLoginUrl);
     await expect(page.locator('input#userEmail')).toBeVisible();
     await expect(page.locator('input#userPassword')).toBeVisible();
