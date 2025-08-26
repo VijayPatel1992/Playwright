@@ -17,6 +17,7 @@ const env: string = process.env.TEST_ENV || 'QA';
 const config: Config = loadEnvironmentConfig(env);
 
 
+
 let startTime: number;
 let suiteStartTime: number;
 let pageObjects: PageObjects;
