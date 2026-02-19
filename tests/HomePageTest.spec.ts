@@ -86,6 +86,7 @@ test.afterEach(async ({ page }, testInfo) => {
 
 test.afterAll(async () => {
   const suiteEndTime = Date.now();
+  
   const totalDuration = suiteEndTime - suiteStartTime;
   testLogger.info('All test cases executed.');
   testLogger.info(`Total execution time: ${totalDuration}ms`);
@@ -99,14 +100,16 @@ test('Navigate to Application URL', async ({ page }) => {
   try {
     const expectedLoginUrl = `${config.baseUrl}#/auth/login`;
     await expect(page).toHaveURL(expectedLoginUrl);
+    await page.frame
     await expect(page.locator('input#userEmail')).toBeVisible();
     await expect(page.locator('input#userPassword')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Login' })).toBeVisible();
-
+    
     testLogger.info(`Successfully navigated to login page: ${expectedLoginUrl}`);
   } catch (error) {
     testLogger.error('Navigation test failed:', error);
     throw error;
+    
   }
 });
 

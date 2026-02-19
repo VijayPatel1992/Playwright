@@ -39,8 +39,11 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video:'on',
     ignoreHTTPSErrors: true,
+    
 
   },
+
+  
 
   /* Configure projects for major browsers */
   projects: [
